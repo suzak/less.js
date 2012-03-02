@@ -64,6 +64,9 @@ args = args.filter(function (arg) {
         case 'O0': options.optimization = 0; break;
         case 'O1': options.optimization = 1; break;
         case 'O2': options.optimization = 2; break;
+        case 'MF':
+            options.depfile = path.resolve(process.cwd(), match[2]);
+            break;
     }
 });
 
@@ -88,11 +91,16 @@ var parseLessFile = function (e, data) {
         sys.puts("lessc: " + e.message);
         process.exit(1);
     }
+    var depfile;
+    if (options.depfile) {
+        depfile = fs.openSync(options.depfile, "w");
+    }
 
     new(less.Parser)({
         paths: [path.dirname(input)].concat(options.paths),
         optimization: options.optimization,
-        filename: input
+        filename: input,
+        depfile: depfile
     }).parse(data, function (err, tree) {
         if (err) {
             less.writeError(err, options);
