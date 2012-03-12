@@ -13,7 +13,8 @@ var options = {
     optimization: 1,
     silent: false,
     paths: [],
-    color: true
+    color: true,
+    strictImports: false
 };
 
 args = args.filter(function (arg) {
@@ -38,6 +39,9 @@ args = args.filter(function (arg) {
         case 's':
         case 'silent':
             options.silent = true;
+            break;
+        case 'strict-imports':
+            options.strictImports = true;
             break;
         case 'h':
         case 'help':
@@ -100,6 +104,7 @@ var parseLessFile = function (e, data) {
         paths: [path.dirname(input)].concat(options.paths),
         optimization: options.optimization,
         filename: input,
+        strictImports: options.strictImports,
         depfile: depfile
     }).parse(data, function (err, tree) {
         if (err) {
